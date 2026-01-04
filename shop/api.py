@@ -20,14 +20,8 @@ def create_category(request, data: CategoryCreateSchema):
     return category
 
 
-@router.get("/categories/{category_id}", response=CategorySchema)
-def get_category(request, category_id: int):
-    """Получить одну категорию"""
-    return Category.objects.get(id=category_id)
-
-
-@router.get("/categories/slug/{slug}", response=CategorySchema)
-def get_category_by_slug(request, slug: str):
+@router.get("/categories/{slug}", response=CategorySchema)
+def get_category(request, slug: str):
     """Получить категорию по slug"""
     return Category.objects.get(slug=slug)
 
@@ -54,21 +48,15 @@ def create_product(request, data: ProductCreateSchema):
     return product
 
 
-@router.get("/products/{product_id}", response=ProductSchema)
-def get_product(request, product_id: int):
-    """Получить один товар"""
-    return Product.objects.select_related('category').get(id=product_id)
-
-
-@router.get("/products/slug/{slug}", response=ProductSchema)
-def get_product_by_slug(request, slug: str):
+@router.get("/products/{slug}", response=ProductSchema)
+def get_product(request, slug: str):
     """Получить товар по slug"""
     return Product.objects.select_related('category').get(slug=slug)
 
 
-@router.delete("/products/{product_id}")
-def delete_product(request, product_id: int):
-    """Удалить товар"""
-    product = Product.objects.get(id=product_id)
+@router.delete("/products/{slug}")
+def delete_product(request, slug: str):
+    """Удалить товар по slug"""
+    product = Product.objects.get(slug=slug)
     product.delete()
     return {"success": True}

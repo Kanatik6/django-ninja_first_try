@@ -26,6 +26,12 @@ def get_category(request, category_id: int):
     return Category.objects.get(id=category_id)
 
 
+@router.get("/categories/slug/{slug}", response=CategorySchema)
+def get_category_by_slug(request, slug: str):
+    """Получить категорию по slug"""
+    return Category.objects.get(slug=slug)
+
+
 # ===== ТОВАРЫ =====
 @router.get("/products", response=List[ProductSchema])
 def list_products(request, category_id: int = None, in_stock: bool = None):
@@ -52,6 +58,12 @@ def create_product(request, data: ProductCreateSchema):
 def get_product(request, product_id: int):
     """Получить один товар"""
     return Product.objects.select_related('category').get(id=product_id)
+
+
+@router.get("/products/slug/{slug}", response=ProductSchema)
+def get_product_by_slug(request, slug: str):
+    """Получить товар по slug"""
+    return Product.objects.select_related('category').get(slug=slug)
 
 
 @router.delete("/products/{product_id}")

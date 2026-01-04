@@ -1,5 +1,6 @@
 from ninja import Router
 from typing import List
+from django.shortcuts import get_object_or_404
 from .models import Product, Category
 from .schemas import ProductSchema, ProductCreateSchema, CategorySchema, CategoryCreateSchema
 
@@ -23,7 +24,7 @@ def create_category(request, data: CategoryCreateSchema):
 @router.get("/categories/{slug}", response=CategorySchema)
 def get_category(request, slug: str):
     """Получить категорию по slug"""
-    return Category.objects.get(slug=slug)
+    return get_object_or_404(Category, slug=slug)
 
 
 # ===== ТОВАРЫ =====
@@ -51,12 +52,12 @@ def create_product(request, data: ProductCreateSchema):
 @router.get("/products/{slug}", response=ProductSchema)
 def get_product(request, slug: str):
     """Получить товар по slug"""
-    return Product.objects.select_related('category').get(slug=slug)
+    return get_object_or_404(Product.objects.select_related('category'), slug=slug)
 
 
 @router.delete("/products/{slug}")
 def delete_product(request, slug: str):
     """Удалить товар по slug"""
-    product = Product.objects.get(slug=slug)
+    product = get_object_or_404(Product, slug=slug)
     product.delete()
     return {"success": True}
